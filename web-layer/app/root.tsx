@@ -8,7 +8,6 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
-import WallpaperImage from "./assets/wallpaper.jpg"
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -46,7 +45,7 @@ export default function App() {
 
 
   const bgStyle = {
-    backgroundImage: `url(${WallpaperImage})`,
+    backgroundImage: `url('/wallpaper.jpg')`,
     backgroundSize: 'cover',
     backgroundRepeat: 'no-repeat',
     backgroundPosition: 'center'
