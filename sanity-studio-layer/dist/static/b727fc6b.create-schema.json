@@ -1,0 +1,494 @@
+[
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Team Name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "uri",
+                "constraint": {
+                  "options": {
+                    "scheme": [
+                      "/^http$/",
+                      "/^https$/"
+                    ],
+                    "allowRelative": false,
+                    "relativeOnly": false,
+                    "allowCredentials": false
+                  }
+                }
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "logoUrl",
+        "type": "url",
+        "title": "Team Logo URL"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "dateCreated",
+        "type": "datetime",
+        "title": "Date Team Created"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "manager",
+        "type": "string"
+      }
+    ],
+    "name": "team",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "Player Name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "team"
+          }
+        ],
+        "name": "team",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "position",
+        "type": "string"
+      },
+      {
+        "name": "goals",
+        "type": "number",
+        "title": "Goals Scored"
+      },
+      {
+        "name": "assists",
+        "type": "number"
+      },
+      {
+        "name": "cards",
+        "type": "number",
+        "title": "Yellow or Red Cards"
+      }
+    ],
+    "name": "player",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "league"
+          }
+        ],
+        "name": "league",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "team"
+          }
+        ],
+        "name": "homeTeam",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "team"
+          }
+        ],
+        "name": "awayTeam",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "matchDate",
+        "type": "datetime"
+      },
+      {
+        "options": {
+          "list": [
+            "Scheduled",
+            "Live",
+            "Completed",
+            "Cancelled"
+          ]
+        },
+        "name": "status",
+        "type": "string"
+      },
+      {
+        "name": "homeScore",
+        "type": "number"
+      },
+      {
+        "name": "awayScore",
+        "type": "number"
+      }
+    ],
+    "name": "fixture",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "name",
+        "type": "string",
+        "title": "League Name"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "startDate",
+        "type": "datetime"
+      },
+      {
+        "name": "endDate",
+        "type": "datetime"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "totalTeams",
+        "type": "number"
+      },
+      {
+        "options": {
+          "list": [
+            "Group",
+            "Knockout",
+            "Semi-final",
+            "Final"
+          ]
+        },
+        "name": "stage",
+        "type": "string",
+        "title": "Status"
+      }
+    ],
+    "name": "league",
+    "type": "document"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "team"
+          }
+        ],
+        "name": "team",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "league"
+          }
+        ],
+        "name": "league",
+        "type": "reference"
+      },
+      {
+        "name": "points",
+        "type": "number"
+      },
+      {
+        "name": "matches",
+        "type": "number",
+        "title": "Matches Played"
+      },
+      {
+        "name": "wins",
+        "type": "number"
+      },
+      {
+        "name": "losses",
+        "type": "number"
+      },
+      {
+        "name": "draws",
+        "type": "number"
+      },
+      {
+        "name": "goalDifference",
+        "type": "number"
+      },
+      {
+        "name": "isQualified",
+        "type": "boolean",
+        "title": "Team Qualified In Current Stage"
+      }
+    ],
+    "name": "teamInLeague",
+    "type": "document",
+    "title": "Team in League"
+  },
+  {
+    "fields": [
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "fixture"
+          }
+        ],
+        "name": "fixture",
+        "type": "reference"
+      },
+      {
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "to": [
+          {
+            "type": "team"
+          }
+        ],
+        "name": "team",
+        "type": "reference"
+      },
+      {
+        "to": [
+          {
+            "type": "player"
+          }
+        ],
+        "name": "player",
+        "type": "reference",
+        "title": "Player (Optional)"
+      },
+      {
+        "options": {
+          "list": [
+            "Goal",
+            "Yellow Card",
+            "Red Card",
+            "Half-Time",
+            "Full-Time"
+          ]
+        },
+        "validation": [
+          {
+            "rules": [
+              {
+                "flag": "valid",
+                "constraint": [
+                  "Goal",
+                  "Yellow Card",
+                  "Red Card",
+                  "Half-Time",
+                  "Full-Time"
+                ]
+              },
+              {
+                "flag": "presence",
+                "constraint": "required"
+              }
+            ],
+            "level": "error"
+          }
+        ],
+        "name": "eventType",
+        "type": "string"
+      },
+      {
+        "name": "eventTime",
+        "type": "datetime",
+        "title": "Event Time (Minute)"
+      }
+    ],
+    "name": "event",
+    "type": "document"
+  }
+]
