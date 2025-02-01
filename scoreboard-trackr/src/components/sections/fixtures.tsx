@@ -3,7 +3,7 @@ import { JSX, useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { client } from "@/sanity/lib/client";
 import { EVENTS_QUERY, FIXTURES_QUERY } from "@/sanity/lib/queries";
-import { Fixture } from "@/sanity/lib/types";
+import { Event, Fixture } from "@/sanity/lib/types";
 import { FaFutbol, FaPause, FaFlagCheckered } from 'react-icons/fa';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -33,11 +33,11 @@ const getInitials = (name: string) => {
 };
 
 const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
-    const homeTeamColor = useMemo(() => getRandomColor(), [(fixture?.homeTeam as any)?.name]);
-    const awayTeamColor = useMemo(() => getRandomColor(), [(fixture?.awayTeam as any)?.name]);
+    const homeTeamColor = useMemo(() => getRandomColor(), [(fixture?.homeTeam as unknown as { name: string} )?.name]);
+    const awayTeamColor = useMemo(() => getRandomColor(), [(fixture?.awayTeam as unknown as { name: string} )?.name]);
   
     const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
-    const [events, setEvents] = useState<any[]>([]);
+    const [events, setEvents] = useState<Event[]>([]);
     const [loadingEvents, setLoadingEvents] = useState(false);
   
     const handleFixtureClick = async (fixture: Fixture) => {
@@ -67,16 +67,16 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
           {/* Home Team */}
           <div className="flex flex-col my-auto items-center">
             <Avatar className="hidden md:block">
-              <AvatarImage src={(fixture.homeTeam as any)?.logoUrl} alt={(fixture?.homeTeam as any)?.name} />
+              <AvatarImage src={(fixture.homeTeam as unknown as { logoUrl: string})?.logoUrl} alt={(fixture?.homeTeam as unknown as { name: string})?.name} />
               <AvatarFallback className={`${homeTeamColor} text-white font-bold`}>
-                {getInitials((fixture.homeTeam as any)?.name)}
+                {getInitials((fixture.homeTeam as unknown as { name: string})?.name)}
               </AvatarFallback>
             </Avatar>
-            <span className="font-semibold text-lg">{(fixture.homeTeam as any)?.name}</span>
+            <span className="font-semibold text-lg">{(fixture?.homeTeam as unknown as { name: string})?.name}</span>
           </div>
   
           {/* Home Score */}
-          <div className="flex text-4xl flex-col my-auto">{fixture.homeScore}</div>
+          <div className="flex text-4xl flex-col my-auto">{fixture?.homeScore}</div>
   
           {/* VS and Date */}
           <div className="flex flex-col my-auto">
@@ -91,12 +91,12 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
           {/* Away Team */}
           <div className="flex flex-col my-auto items-center">
             <Avatar className="hidden md:block">
-              <AvatarImage src={(fixture.awayTeam as any)?.logoUrl} alt={(fixture?.awayTeam as any)?.name} />
+              <AvatarImage src={(fixture.awayTeam as unknown as { logoUrl: string})?.logoUrl} alt={(fixture?.awayTeam as unknown as { name: string})?.name} />
               <AvatarFallback className={`${awayTeamColor} text-white font-bold`}>
-                {getInitials((fixture.awayTeam as any)?.name)}
+                {getInitials((fixture.awayTeam as unknown as { name: string})?.name)}
               </AvatarFallback>
             </Avatar>
-            <span className="font-semibold text-lg">{(fixture.awayTeam as any)?.name}</span>
+            <span className="font-semibold text-lg">{(fixture.awayTeam as unknown as { name: string})?.name}</span>
           </div>
         </div>
   
@@ -110,7 +110,7 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
               <ul className="mt-2">
                 {events.map((event) => (
                   <li key={event._id} className="text-sm py-1 border-b justify-between flex flex-col md:flex-row">
-                    <span className="font-semibold">{new Date(event?.eventTime as string).toLocaleTimeString()}'</span> - <span className="flex gap-2">{eventIcons[event.eventType]} {event.eventType} ({event.player?.name} - {event.team?.name})</span>
+                    <span className="font-semibold">{new Date(event?.eventTime as string).toLocaleTimeString()}&apos;</span> <span className="flex gap-2">{eventIcons[event?.eventType as string]} {event.eventType} ({(event.player as unknown as { name: string})?.name} - {(event.team as unknown as { name: string})?.name})</span>
                   </li>
                 ))}
               </ul>
