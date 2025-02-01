@@ -65,7 +65,7 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
           className="flex flex-row h-fit justify-between my-[1em] text-sm align-middle text-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
         >
           {/* Home Team */}
-          <div className="flex flex-col my-auto items-center">
+          <div className="md:w-[20%] flex flex-col my-auto items-center">
             <Avatar className="hidden md:block">
               <AvatarImage src={(fixture.homeTeam as unknown as { logoUrl: string})?.logoUrl} alt={(fixture?.homeTeam as unknown as { name: string})?.name} />
               <AvatarFallback className={`${homeTeamColor} text-white font-bold`}>
@@ -79,7 +79,7 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
           <div className="flex text-4xl flex-col my-auto">{fixture?.homeScore}</div>
   
           {/* VS and Date */}
-          <div className="flex flex-col my-auto">
+          <div className="md:w-[20%] flex flex-col my-auto">
             <span className="text-xl font-bold">VS</span>
             <span className="hidden md:block">{new Date(fixture?.matchDate as string).toDateString()}</span>
             <span className="hidden md:block text-xs text-green">({fixture?.status})</span>
@@ -89,7 +89,7 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
           <div className="flex text-4xl flex-col my-auto">{fixture.awayScore}</div>
   
           {/* Away Team */}
-          <div className="flex flex-col my-auto items-center">
+          <div className="md:w-[20%] flex flex-col my-auto items-center">
             <Avatar className="hidden md:block">
               <AvatarImage src={(fixture.awayTeam as unknown as { logoUrl: string})?.logoUrl} alt={(fixture?.awayTeam as unknown as { name: string})?.name} />
               <AvatarFallback className={`${awayTeamColor} text-white font-bold`}>
@@ -126,7 +126,7 @@ const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
 const FixtureCards: React.FC<{ fixtures: Fixture[] }> = ({ fixtures }) => {
 
     return (
-    <Card className="border border-gray-300 shadow-md rounded-lg mt-4">
+    <Card className="border border-gray-300 shadow-md rounded-lg mt-4 max-h-[55vh] overflow-auto">
       <CardContent>
         {fixtures.length > 0 ? (
           fixtures.map((fixture: Fixture, index) => (
