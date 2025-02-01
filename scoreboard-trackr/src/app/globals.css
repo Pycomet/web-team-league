@@ -61,6 +61,7 @@
 body {
   color: var(--foreground);
   background: var(--background);
+  background-color: transparent;
   background-image: url('/wallpaper.jpg');
   background-size: cover;
   background-position: center;
