@@ -56,7 +56,8 @@ const TablesSection = () => {
 
   return (
     <section className="bg-none">
-      <h1 className="font-bold uppercase mb-2">League Tables</h1>
+      <h1 className="font-bold uppercase">League Tables</h1>
+      <hr className="my-2" />
       
       {/* Tabs for leagues */}
       <Tabs value={selectedLeague || ""} onValueChange={setSelectedLeague} className="w-full">

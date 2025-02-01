@@ -1,52 +1,149 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"; // Ensures it's a client component
-import { useEffect, useState } from "react";
+import { JSX, useEffect, useState } from "react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { client } from "@/sanity/lib/client";
-import { FIXTURES_QUERY } from "@/sanity/lib/queries"; // You need to define this query
-import { Fixture } from "@/sanity/lib/types"; // Define the correct type for a fixture
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { EVENTS_QUERY, FIXTURES_QUERY } from "@/sanity/lib/queries";
+import { Fixture } from "@/sanity/lib/types";
+import { FaFutbol, FaPause, FaFlagCheckered } from 'react-icons/fa';
+import { Card, CardContent } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { useMemo } from "react";
 
-// Define columns for the fixture table
-export const fixtureColumns: ColumnDef<Fixture>[] = [
-  {
-    accessorKey: "homeTeam.name",
-    header: "Home Team",
-  },
-  {
-    accessorKey: "awayTeam.name",
-    header: "Away Team",
-  },
-  {
-    accessorKey: "matchDate",
-    header: "Match Date",
-    cell: ({ row }) => new Date(row?.original?.matchDate as string).toLocaleString(),
-  },
-  {
-    accessorKey: "homeScore",
-    header: "Home Score",
-  },
-  {
-    accessorKey: "awayScore",
-    header: "Away Score",
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-  },
-];
+const eventIcons: { [key: string]: JSX.Element } = {
+    'Goal': <FaFutbol className="text-green-600" />,
+    'Yellow Card': <p className="text-yellow-500">🟨</p>,
+    'Red Card': <p className="text-red-600">🟥</p>,
+    'Half-Time': <FaPause className="text-gray-600" />,
+    'Full-Time': <FaFlagCheckered className="text-blue-600" />,
+  };
+
+// Function to generate a random pastel color
+const getRandomColor = () => {
+  const colors = ["bg-red-500", "bg-blue-500", "bg-green-500", "bg-yellow-500", "bg-purple-500", "bg-pink-500"];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
+// Function to get initials from a team name
+const getInitials = (name: string) => {
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase();
+};
+
+const FixtureRow: React.FC<{ fixture: Fixture }> = ({ fixture }) => {
+    const homeTeamColor = useMemo(() => getRandomColor(), [(fixture?.homeTeam as any)?.name]);
+    const awayTeamColor = useMemo(() => getRandomColor(), [(fixture?.awayTeam as any)?.name]);
+  
+    const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
+    const [events, setEvents] = useState<any[]>([]);
+    const [loadingEvents, setLoadingEvents] = useState(false);
+  
+    const handleFixtureClick = async (fixture: Fixture) => {
+      if (fixture === selectedFixture) {
+        setSelectedFixture(null);
+        setEvents([]);
+      } else {
+        setSelectedFixture(fixture);
+        setLoadingEvents(true);
+        try {
+          const fetchedEvents = await client.fetch(EVENTS_QUERY, { fixtureId: fixture._id });
+          setEvents(fetchedEvents);
+        } catch (error) {
+          console.error("Error fetching events:", error);
+        } finally {
+          setLoadingEvents(false);
+        }
+      }
+    };
+  
+    return (
+      <>
+        <div
+          onClick={() => handleFixtureClick(fixture)}
+          className="flex flex-row h-fit justify-between my-[1em] text-sm align-middle text-center cursor-pointer hover:bg-gray-100 p-2 rounded-lg"
+        >
+          {/* Home Team */}
+          <div className="flex flex-col my-auto items-center">
+            <Avatar className="hidden md:block">
+              <AvatarImage src={(fixture.homeTeam as any)?.logoUrl} alt={(fixture?.homeTeam as any)?.name} />
+              <AvatarFallback className={`${homeTeamColor} text-white font-bold`}>
+                {getInitials((fixture.homeTeam as any)?.name)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="font-semibold text-lg">{(fixture.homeTeam as any)?.name}</span>
+          </div>
+  
+          {/* Home Score */}
+          <div className="flex text-4xl flex-col my-auto">{fixture.homeScore}</div>
+  
+          {/* VS and Date */}
+          <div className="flex flex-col my-auto">
+            <span className="text-xl font-bold">VS</span>
+            <span className="hidden md:block">{new Date(fixture?.matchDate as string).toDateString()}</span>
+            <span className="hidden md:block text-xs text-green">({fixture?.status})</span>
+          </div>
+  
+          {/* Away Score */}
+          <div className="flex text-4xl flex-col my-auto">{fixture.awayScore}</div>
+  
+          {/* Away Team */}
+          <div className="flex flex-col my-auto items-center">
+            <Avatar className="hidden md:block">
+              <AvatarImage src={(fixture.awayTeam as any)?.logoUrl} alt={(fixture?.awayTeam as any)?.name} />
+              <AvatarFallback className={`${awayTeamColor} text-white font-bold`}>
+                {getInitials((fixture.awayTeam as any)?.name)}
+              </AvatarFallback>
+            </Avatar>
+            <span className="font-semibold text-lg">{(fixture.awayTeam as any)?.name}</span>
+          </div>
+        </div>
+  
+        {fixture === selectedFixture && (
+          <div className="p-4 ">
+            {/* Events Section */}
+            <h3 className=" font-bold">Match Events</h3>
+            {loadingEvents ? (
+              <p>Loading events...</p>
+            ) : events.length > 0 ? (
+              <ul className="mt-2">
+                {events.map((event) => (
+                  <li key={event._id} className="text-sm py-1 border-b justify-between flex flex-col md:flex-row">
+                    <span className="font-semibold">{new Date(event?.eventTime as string).toLocaleTimeString()}'</span> - <span className="flex gap-2">{eventIcons[event.eventType]} {event.eventType} ({event.player?.name} - {event.team?.name})</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No events recorded.</p>
+            )}
+          </div>
+        )}
+      </>
+    );
+  };
+// FixturesTable component to avoid repetition
+const FixtureCards: React.FC<{ fixtures: Fixture[] }> = ({ fixtures }) => {
+
+    return (
+    <Card className="border border-gray-300 shadow-md rounded-lg mt-4">
+      <CardContent>
+        {fixtures.length > 0 ? (
+          fixtures.map((fixture: Fixture, index) => (
+            <>
+                <FixtureRow fixture={fixture} key={index} />
+                < hr />
+            </>
+          ))
+        ) : (
+          <div className="text-center py-4 text-gray-500">
+            No fixtures available.
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
 interface FixtureSectionProps {
   selectedLeagueId: string;
@@ -54,7 +151,7 @@ interface FixtureSectionProps {
 
 const FixtureSection: React.FC<FixtureSectionProps> = ({ selectedLeagueId }) => {
   const [fixtures, setFixtures] = useState<Fixture[]>([]);
-  const [selectedFixture, setSelectedFixture] = useState<Fixture | null>(null);
+  
   const [loading, setLoading] = useState(true);
 
   // Fetch fixtures based on the selected league
@@ -75,73 +172,45 @@ const FixtureSection: React.FC<FixtureSectionProps> = ({ selectedLeagueId }) => 
     }
   }, [selectedLeagueId]);
 
-  const table = useReactTable({
-    data: fixtures,
-    columns: fixtureColumns,
-    getCoreRowModel: getCoreRowModel(),
+  const today = new Date();
+  const todayFixtures = fixtures.filter(fixture => {
+    const matchDate = new Date(fixture?.matchDate as string);
+    return matchDate.toDateString() === today.toDateString();
   });
 
-  // Show detailed fixture when clicked
-  const handleFixtureClick = (fixture: Fixture) => {
-    setSelectedFixture(fixture);
-  };
+  const upcomingFixtures = fixtures.filter(fixture => new Date(fixture?.matchDate as string) > today);
+  const pastFixtures = fixtures.filter(fixture => new Date(fixture?.matchDate as string) < today);
 
   if (loading) return <p>Loading fixtures...</p>;
 
   return (
-    <section>
-      <h2 className="font-bold uppercase mb-2">Match Fixtures</h2>
+    <section className="bg-none">
+      <h2 className="font-bold uppercase">Match Fixtures</h2>
+      <hr className="my-2" />
+      <Tabs defaultValue="today" className="w-full">
+        <TabsList className="md:gap-[2em] bg-foreground text-background">
+          <TabsTrigger value="today">Today</TabsTrigger>
+          <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
+          <TabsTrigger value="past">Past</TabsTrigger>
+        </TabsList>
+        <br />
 
-      {/* Fixtures Table */}
-      <Table className="border border-gray-300 shadow-md rounded-lg mt-4">
-        <TableHeader className="bg-[#e1350e5d]">
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id} className="px-4 py-2 cursor-pointer">
-                  {flexRender(header.column.columnDef.header, header.getContext())}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                className="border-b cursor-pointer"
-                onClick={() => handleFixtureClick(row.original)} // Handle row click to show details
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className="px-4 py-2">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={fixtureColumns.length} className="text-center py-4 text-gray-500">
-                No fixtures found.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+        {/* Today's Fixtures Tab */}
+        <TabsContent value="today">
+          <FixtureCards fixtures={todayFixtures} />
+        </TabsContent>
 
-      {/* Fixture Details Section */}
-      {selectedFixture && (
-        <div className="mt-6 p-4 border border-gray-300 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold">Fixture Details</h3>
-          <p><strong>Home Team:</strong> {(selectedFixture?.homeTeam as any)?.name}</p>
-          <p><strong>Away Team:</strong> {(selectedFixture?.awayTeam as any)?.name}</p>
-          <p><strong>Match Date:</strong> {new Date(selectedFixture?.matchDate as string).toLocaleString()}</p>
-          <p><strong>Status:</strong> {selectedFixture.status}</p>
-          <p><strong>Home Score:</strong> {selectedFixture.homeScore}</p>
-          <p><strong>Away Score:</strong> {selectedFixture.awayScore}</p>
-        </div>
-      )}
+        {/* Upcoming Fixtures Tab */}
+        <TabsContent value="upcoming">
+          <FixtureCards fixtures={upcomingFixtures} />
+        </TabsContent>
+
+        {/* Past Fixtures Tab */}
+        <TabsContent value="past">
+          <FixtureCards fixtures={pastFixtures} />
+        </TabsContent>
+      </Tabs>
+
     </section>
   );
 };

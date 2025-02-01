@@ -62,3 +62,20 @@ export const FIXTURES_QUERY = `
     status
   }
 `;
+
+
+export const EVENTS_QUERY = `
+  *[_type == "event" && fixture._ref == $fixtureId] | order(eventTime asc) {
+    _id,
+    eventType,
+    eventTime,
+    "player": player->{
+      _id,
+      name
+    },
+    "team": team->{
+      _id,
+      name
+    }
+  }
+`;

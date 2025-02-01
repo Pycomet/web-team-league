@@ -56,7 +56,9 @@ export default function TeamsSection() {
 
   return (
     <section className="bg-none">
-      <h1 className="font-bold uppercase mb-2">Teams</h1>
+      <h1 className="font-bold uppercase">Teams</h1>
+      <hr className="my-2" />
+
       <Tabs value={selectedTeam || ""} onValueChange={setSelectedTeam} className="w-full">
         <TabsList className="md:gap-[2em] bg-foreground text-background">
           {teams.map((team: Team) => (
