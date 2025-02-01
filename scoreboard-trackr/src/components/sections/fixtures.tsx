@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"; // Ensures it's a client component
-
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import { FIXTURES_QUERY } from "@/sanity/lib/queries"; // You need to define this query
@@ -134,9 +134,7 @@ const FixtureSection: React.FC<FixtureSectionProps> = ({ selectedLeagueId }) => 
       {selectedFixture && (
         <div className="mt-6 p-4 border border-gray-300 rounded-lg shadow-md">
           <h3 className="text-lg font-semibold">Fixture Details</h3>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           <p><strong>Home Team:</strong> {(selectedFixture?.homeTeam as any)?.name}</p>
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           <p><strong>Away Team:</strong> {(selectedFixture?.awayTeam as any)?.name}</p>
           <p><strong>Match Date:</strong> {new Date(selectedFixture?.matchDate as string).toLocaleString()}</p>
           <p><strong>Status:</strong> {selectedFixture.status}</p>
