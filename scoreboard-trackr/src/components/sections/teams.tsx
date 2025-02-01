@@ -59,7 +59,7 @@ export default function TeamsSection() {
       <h1 className="font-bold uppercase">Teams</h1>
       <hr className="my-2" />
 
-      <Tabs value={selectedTeam || ""} onValueChange={setSelectedTeam} className="w-full">
+      <Tabs value={selectedTeam || ""} onValueChange={setSelectedTeam} className="w-fit">
         <TabsList className="md:gap-[2em] bg-foreground text-background">
           {teams.map((team: Team) => (
             <TabsTrigger key={team?._id} value={team?._id}>
