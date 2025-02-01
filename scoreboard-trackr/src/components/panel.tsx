@@ -36,7 +36,7 @@ export default function Dashboard() {
 
       {/* Dynamic Content Area */}
       <div className="w-full overflow-x-auto p-2 md:p-4">
-        {selectedTab === "Fixtures" && <FixtureSection selectedLeagueId={"e39486b7-6516-4674-adc3-e890459b1091"} />}
+        {selectedTab === "Fixtures" && <FixtureSection selectedLeagueId={"dbcd3ed8-5977-4492-b82d-c9d6bdae6fc9"} />}
         {selectedTab === "Tables" && <TablesSection />}
         {selectedTab === "Teams" && <TeamsSection />}
       </div>
