@@ -1,6 +1,5 @@
 "use client"; // Ensures it's a client component
 
-import { useState } from "react";
 import {
   ColumnDef,
   flexRender,
